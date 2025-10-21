@@ -1,0 +1,13 @@
+********************************************************
+Solution Name	: ShellApp (Version 3)
+Remarks : New container app for upgrading tasks.
+Author		: Dilsan Madusanka, Surija SiriKumar, Anushka Thennekon
+Date Created	: 2025-08-18
+
+********************************************************
+
+***************************** Modification Control ******************************
+Tag         Date           Developer    SpecID		Version		Project 	 Description
+*********************************************************************************
+V3001       18-Aug-2025		Dilshan					3.0.1.0					 project initial version
+	

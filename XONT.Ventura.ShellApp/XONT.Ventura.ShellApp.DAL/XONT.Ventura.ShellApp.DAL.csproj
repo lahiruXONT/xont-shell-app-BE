@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+	  <OutputType>Library</OutputType>
+	  <AssemblyTitle>XONT.Ventura.ShellApp.DAL</AssemblyTitle>
+	  <Company>x-ont</Company>
+	  <Product>XONT.Ventura.ShellApp.DAL</Product>
+	  <Copyright>Copyright © x-ont</Copyright>
+	  <AssemblyVersion>4.0.0.0</AssemblyVersion>
+	  <FileVersion>4.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\XONT.Ventura.ShellApp.DOMAIN\XONT.Ventura.ShellApp.DOMAIN.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="XONT.Common.Data.EncriptDecript">
+      <HintPath>..\..\..\..\..\XontResource\bin\XONT.Common.Data.EncriptDecript.dll</HintPath>
+    </Reference>
+    <Reference Include="XONT.Common.Message.MessageCreate">
+      <HintPath>..\..\..\..\..\XontResource\bin\XONT.Common.Message.MessageCreate.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

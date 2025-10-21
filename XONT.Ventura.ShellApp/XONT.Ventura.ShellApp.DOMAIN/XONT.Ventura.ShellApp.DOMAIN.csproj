@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+	  <OutputType>Library</OutputType>
+	  <AssemblyTitle>XONT.Ventura.ShellApp.DOMAIN</AssemblyTitle>
+	  <Company>x-ont</Company>
+	  <Product>XONT.Ventura.ShellApp.DOMAIN</Product>
+	  <Copyright>Copyright © x-ont</Copyright>
+	  <AssemblyVersion>4.0.0.0</AssemblyVersion>
+	  <FileVersion>4.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="XONT.Common.Message.MessageCreate">
+      <HintPath>..\..\..\..\..\XontResource\bin\XONT.Common.Message.MessageCreate.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

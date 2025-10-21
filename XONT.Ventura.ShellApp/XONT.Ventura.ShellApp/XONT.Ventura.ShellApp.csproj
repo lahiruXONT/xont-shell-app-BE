@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+	  <AssemblyTitle>XONT.Ventura.ShellApp</AssemblyTitle>
+	  <Company>x-ont</Company>
+	  <Product>XONT.Ventura.ShellApp</Product>
+	  <Copyright>Copyright © x-ont</Copyright>
+	  <AssemblyVersion>4.0.0.0</AssemblyVersion>
+	  <FileVersion>4.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.18" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.19" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.13.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.4" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="8.1.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="8.1.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="8.1.4" />
+    <PackageReference Include="Yarp.ReverseProxy" Version="2.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\XONT.Ventura.ShellApp.BLL\XONT.Ventura.ShellApp.BLL.csproj" />
+    <ProjectReference Include="..\XONT.Ventura.ShellApp.DAL\XONT.Ventura.ShellApp.DAL.csproj" />
+    <ProjectReference Include="..\XONT.Ventura.ShellApp.DOMAIN\XONT.Ventura.ShellApp.DOMAIN.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="XONT.Common.Data.EncriptDecript">
+      <HintPath>..\..\..\..\..\XontResource\bin\XONT.Common.Data.EncriptDecript.dll</HintPath>
+    </Reference>
+    <Reference Include="XONT.Common.Message.MessageCreate">
+      <HintPath>..\..\..\..\..\XontResource\bin\XONT.Common.Message.MessageCreate.dll</HintPath>
+    </Reference>
+    <Reference Include="Yarp.ReverseProxy">
+      <HintPath>..\..\..\bin\Yarp.ReverseProxy.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

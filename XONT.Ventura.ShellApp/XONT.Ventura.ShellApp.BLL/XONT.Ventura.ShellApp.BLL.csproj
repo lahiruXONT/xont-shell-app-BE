@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+	  <OutputType>Library</OutputType>
+	  <AssemblyTitle>XONT.Ventura.ShellApp.BLL</AssemblyTitle>
+	  <Company>x-ont</Company>
+	  <Product>XONT.Ventura.ShellApp.BLL</Product>
+	  <Copyright>Copyright © x-ont</Copyright>
+	  <AssemblyVersion>4.0.0.0</AssemblyVersion>
+	  <FileVersion>4.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.8" />
+	  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.13.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\XONT.Ventura.ShellApp.DAL\XONT.Ventura.ShellApp.DAL.csproj" />
+    <ProjectReference Include="..\XONT.Ventura.ShellApp.DOMAIN\XONT.Ventura.ShellApp.DOMAIN.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="XONT.Common.Message.MessageCreate">
+      <HintPath>..\..\..\..\..\XontResource\bin\XONT.Common.Message.MessageCreate.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

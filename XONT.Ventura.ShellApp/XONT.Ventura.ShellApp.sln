@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36301.6
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		Modification Log.txt = Modification Log.txt
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XONT.Ventura.ShellApp", "XONT.Ventura.ShellApp\XONT.Ventura.ShellApp.csproj", "{16D2D458-D986-1112-8CBC-3BD8E21BEEC1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XONT.Ventura.ShellApp.BLL", "XONT.Ventura.ShellApp.BLL\XONT.Ventura.ShellApp.BLL.csproj", "{A79982DA-0FE3-8540-9148-EA3266A81B2D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XONT.Ventura.ShellApp.DAL", "XONT.Ventura.ShellApp.DAL\XONT.Ventura.ShellApp.DAL.csproj", "{561A5ECA-CCB1-E940-DA84-4A94000E943C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XONT.Ventura.ShellApp.DOMAIN", "XONT.Ventura.ShellApp.DOMAIN\XONT.Ventura.ShellApp.DOMAIN.csproj", "{B216994C-5521-1110-A2CF-F91C396D7F02}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{16D2D458-D986-1112-8CBC-3BD8E21BEEC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16D2D458-D986-1112-8CBC-3BD8E21BEEC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16D2D458-D986-1112-8CBC-3BD8E21BEEC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16D2D458-D986-1112-8CBC-3BD8E21BEEC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A79982DA-0FE3-8540-9148-EA3266A81B2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A79982DA-0FE3-8540-9148-EA3266A81B2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A79982DA-0FE3-8540-9148-EA3266A81B2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A79982DA-0FE3-8540-9148-EA3266A81B2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{561A5ECA-CCB1-E940-DA84-4A94000E943C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{561A5ECA-CCB1-E940-DA84-4A94000E943C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{561A5ECA-CCB1-E940-DA84-4A94000E943C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{561A5ECA-CCB1-E940-DA84-4A94000E943C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B216994C-5521-1110-A2CF-F91C396D7F02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B216994C-5521-1110-A2CF-F91C396D7F02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B216994C-5521-1110-A2CF-F91C396D7F02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B216994C-5521-1110-A2CF-F91C396D7F02}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {52279E03-3857-44B9-997C-33AD6FD5D359}
+	EndGlobalSection
+EndGlobal
