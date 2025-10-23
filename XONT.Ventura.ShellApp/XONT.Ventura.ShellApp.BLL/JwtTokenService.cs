@@ -22,16 +22,20 @@ namespace XONT.Ventura.ShellApp.BLL
             _jwtSettings = jwtSettings.Value;
         }
 
-        public string GenerateAccessToken(string userName, string businessUnit, string roleCode)
+        public string GenerateAccessToken(string userName, string businessUnit, string roleCode,List<string> userRoleCodes)
         {
             var claims = new[]
             {
             new Claim(ClaimTypes.Name, userName),
             new Claim("BusinessUnit", businessUnit),
             new Claim("RoleCode", roleCode),
+            
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
-
+            foreach (var role in userRoleCodes)
+            {
+                claims.Append(new Claim(ClaimTypes.Role, role));
+            }
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

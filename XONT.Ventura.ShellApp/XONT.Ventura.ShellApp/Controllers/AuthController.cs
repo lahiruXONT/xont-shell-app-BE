@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Security.Claims;
 using XONT.Common.Data;
 using XONT.Common.Message;
 using XONT.Ventura.ShellApp.BLL;
@@ -56,9 +57,9 @@ namespace XONT.Ventura.ShellApp.Controller
                 // Get default business unit
                 var defaultBU = user.BusinessUnit;
                 var defaultRole = user.DefaultRoleCode ?? (userRoles?.FirstOrDefault()?.RoleCode ?? "");
-
+                var rolelist = userRoles.Select(r => r.RoleCode).ToList() ?? new List<string>();
                 // Generate JWT tokens
-                var token = _jwtTokenService.GenerateAccessToken(user.UserName, defaultBU, defaultRole);
+                var token = _jwtTokenService.GenerateAccessToken(user.UserName, defaultBU, defaultRole, rolelist);
                 var refreshToken = _jwtTokenService.GenerateRefreshToken();
 
                 // Create session
@@ -125,8 +126,8 @@ namespace XONT.Ventura.ShellApp.Controller
                 // Generate new tokens
                 var businessUnit = principal.FindFirst("BusinessUnit")?.Value ?? "";
                 var roleCode = principal.FindFirst("RoleCode")?.Value ?? "";
-
-                var newToken = _jwtTokenService.GenerateAccessToken(userName, businessUnit, roleCode);
+                var userRoles = principal.FindAll(ClaimTypes.Role).Select(c=>c.Value).ToList();
+                var newToken = _jwtTokenService.GenerateAccessToken(userName, businessUnit, roleCode, userRoles);
                 var newRefreshToken = _jwtTokenService.GenerateRefreshToken();
 
                 return Ok(new

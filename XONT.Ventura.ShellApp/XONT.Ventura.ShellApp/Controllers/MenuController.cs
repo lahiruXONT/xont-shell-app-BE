@@ -35,7 +35,7 @@ namespace XONT.Ventura.ShellApp.Controller
 
                 if (message != null)
                 {
-                    return BadRequest(new { message = "Failed to load menu" });
+                    return BadRequest(new { message });
                 }
 
                 var hierarchy = new MenuHierarchyDto
@@ -53,7 +53,10 @@ namespace XONT.Ventura.ShellApp.Controller
                 {
                     // Get tasks for this menu
                     var tasks = _userManager.GetUserTask(menu.MenuCode, userName, ref message);
-
+                    if (message != null)
+                    {
+                        return BadRequest(new { message });
+                    }
                     var menuGroup = new MenuGroupDto
                     {
                         MenuCode = menu.MenuCode,
@@ -128,7 +131,7 @@ namespace XONT.Ventura.ShellApp.Controller
                 MessageSet? message = null;
                 _userManager.UpdateDailyMenu(request.MenuCode, ref message);
 
-                return Ok(new { message = "Daily menu updated" });
+                return Ok(new { message });
             }
             catch (Exception ex)
             {
