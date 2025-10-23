@@ -13,17 +13,14 @@ namespace XONT.Ventura.ShellApp.Controllers
     public class SettingsController : ControllerBase
     {
         private readonly IUserDAO _userManager;
-        private readonly string userName;
-        private readonly string businessUnit;
+
+        private string? userName => HttpContext.User?.Identity?.Name;
+
+        private string? businessUnit => HttpContext.User?.FindFirst("BusinessUnit")?.Value;
 
         public SettingsController(IUserDAO userManager)
         {
             _userManager = userManager;
-
-            var httpContextUser = HttpContext.User;
-            userName = httpContextUser?.Identity?.Name;
-            var businessUnitClaim = httpContextUser?.FindFirst("BusinessUnit");
-            businessUnit = businessUnitClaim?.Value;
         }
 
         //[HttpGet("settings")]

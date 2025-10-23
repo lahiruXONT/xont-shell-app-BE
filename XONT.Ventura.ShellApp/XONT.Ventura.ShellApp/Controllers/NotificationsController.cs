@@ -18,17 +18,14 @@ namespace XONT.Ventura.ShellApp.Controllers
     {
         private readonly IUserDAO _userManager;
         private readonly IHubContext<NotificationHub> _hubContext;
-        private readonly string userName;
-        private readonly string businessUnit;
+
+        private string? userName => HttpContext.User?.Identity?.Name;
+
+        private string? businessUnit => HttpContext.User?.FindFirst("BusinessUnit")?.Value;
         public NotificationsController(IUserDAO userManager, IHubContext<NotificationHub> hubContext)
         {
             _userManager = userManager;
             _hubContext = hubContext;
-
-            var httpContextUser = HttpContext.User;
-            userName = httpContextUser?.Identity?.Name;
-            var businessUnitClaim = httpContextUser?.FindFirst("BusinessUnit");
-            businessUnit = businessUnitClaim?.Value;
         }
 
         //[HttpGet]

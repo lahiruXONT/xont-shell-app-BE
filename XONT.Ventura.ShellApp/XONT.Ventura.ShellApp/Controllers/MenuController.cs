@@ -13,6 +13,9 @@ namespace XONT.Ventura.ShellApp.Controller
     {
         private readonly IUserDAO _userManager;
         private readonly ILogger<MenuController> _logger;
+        private string? userName => HttpContext.User?.Identity?.Name;
+
+        private string? businessUnit => HttpContext.User?.FindFirst("BusinessUnit")?.Value;
 
         public MenuController(ILogger<MenuController> logger, IUserDAO userManager)
         {
@@ -20,11 +23,9 @@ namespace XONT.Ventura.ShellApp.Controller
             _logger = logger;
         }
 
-        [HttpGet("user/{userName}/role/{roleCode}")]
+        [HttpGet("user/role/{roleCode}")]
         public ActionResult<MenuHierarchyDto> GetUserMenu(
-            string userName,
-            string roleCode,
-            [FromQuery] string businessUnit)
+            string roleCode)
         {
             try
             {
@@ -97,9 +98,7 @@ namespace XONT.Ventura.ShellApp.Controller
         }
 
         [HttpGet("system-tasks")]
-        public ActionResult<List<SystemTaskDto>> GetSystemTasks(
-            [FromQuery] string userName,
-            [FromQuery] string businessUnit)
+        public ActionResult<List<SystemTaskDto>> GetSystemTasks()
         {
             // Return AUTOMENU and AUTODAILY tasks
             // This would require additional BLL method or database query
