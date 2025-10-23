@@ -7,6 +7,7 @@ using System.Text;
 using XONT.Ventura.ShellApp.BLL;
 using XONT.Ventura.ShellApp.DAL;
 using XONT.Ventura.ShellApp.DOMAIN;
+using XONT.Ventura.ShellApp.Hubs;
 using XONT.Ventura.ShellApp.Infrastructure;
 using XONT.Ventura.ShellApp.Middlewares;
 
@@ -193,4 +194,5 @@ app.MapControllers();
 app.MapFallback(() =>
     Results.Json(new { Message = "Endpoint not found." }, statusCode: 404));
 
+app.MapHub<NotificationHub>("/hubs/notification");
 app.Run();
