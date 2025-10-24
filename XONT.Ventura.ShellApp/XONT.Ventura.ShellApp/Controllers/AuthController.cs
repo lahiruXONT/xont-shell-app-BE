@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Reflection;
 using System.Security.Claims;
 using XONT.Common.Data;
 using XONT.Common.Message;
@@ -61,10 +62,15 @@ namespace XONT.Ventura.ShellApp.Controller
                 // Generate JWT tokens
                 var token = _jwtTokenService.GenerateAccessToken(user.UserName, defaultBU, defaultRole, rolelist);
                 var refreshToken = _jwtTokenService.GenerateRefreshToken();
+                var unAuthorizedTasks = _userManager.GetUnAuthorizedTasksForUser(user.UserName, ref message);
 
+                if (message!=null)
+                {
+                    return StatusCode(500, new { message});
+                }
                 // Create session
                 var sessionId = Guid.NewGuid().ToString();
-                _sessionManager.CreateSession(sessionId, user.UserName, defaultBU);
+                _sessionManager.CreateSession(sessionId, user.UserName, defaultBU, unAuthorizedTasks);
 
                 // Save login data using existing BLL
                 user.SessionId = sessionId;

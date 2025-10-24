@@ -56,6 +56,18 @@ namespace XONT.Ventura.ShellApp.BLL
             return isExists;
         }
 
+        public List<string> GetUnAuthorizedTasksForUser(string userName, ref MessageSet message)
+        {
+            var dt = _userDal.GetUnAuthorizedTasks(userName, ref message);
+            if (dt == null || dt.Rows.Count == 0 || message!=null)
+                return new List<string>();
+            if (!dt.Columns.Contains("TaskCode"))
+                return new List<string>();
+            return dt.AsEnumerable()
+                    .Where(row => !string.IsNullOrWhiteSpace(row["TaskCode"]?.ToString() ?? ""))
+                    .Select(row => row["TaskCode"]?.ToString() ?? "")
+                    .ToList();
+        }
 
     }
 }

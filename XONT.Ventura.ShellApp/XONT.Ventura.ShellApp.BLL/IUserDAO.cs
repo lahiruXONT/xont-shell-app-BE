@@ -14,5 +14,6 @@ namespace XONT.Ventura.ShellApp.BLL
         List<UserRole> GetUserRoles(string userName, ref MessageSet message);
         void UpdateDailyMenu(string MenuCode, ref MessageSet message);
         bool CheckDailyMenu(string MenuCode, ref MessageSet message);
+        List<string> GetUnAuthorizedTasksForUser(string userName, ref MessageSet message);
     }
 }

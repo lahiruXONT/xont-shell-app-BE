@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text;
+using XONT.Ventura.ShellApp;
 using XONT.Ventura.ShellApp.BLL;
 using XONT.Ventura.ShellApp.DAL;
 using XONT.Ventura.ShellApp.DOMAIN;
@@ -158,15 +159,15 @@ builder.Services.AddAuthentication(options =>
 
 
 
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.AddPolicy("TaskAccess", policy =>
-//        policy.RequireAuthenticatedUser().AddRequirements(new TaskAuthorizationRequirement()));
-//    options.FallbackPolicy = new AuthorizationPolicyBuilder()
-//                               .RequireAuthenticatedUser()
-//                               .AddRequirements(new TaskAuthorizationRequirement())
-//                               .Build();
-//});
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("TaskAccess", policy =>
+        policy.RequireAuthenticatedUser().AddRequirements(new TaskAuthorizationRequirement()));
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                               .RequireAuthenticatedUser()
+                               .AddRequirements(new TaskAuthorizationRequirement())
+                               .Build();
+});
 #endregion
 
 var app = builder.Build();

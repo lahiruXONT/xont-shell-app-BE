@@ -874,6 +874,36 @@ namespace XONT.Ventura.ShellApp.DAL
             return available;
         }
 
+        public DataTable GetUnAuthorizedTasks(string userName, ref MessageSet message)
+        {
+            try
+            {
+                string spName = "[dbo].[usp_TaskGatewayGetUnAuthorizedTasks]";
 
+                var parameters = new[]
+                {
+                new SqlParameter("@UserName", SqlDbType.NVarChar, 50)
+                { Value = (object)userName ?? DBNull.Value }
+                };
+
+                return _dbHelper.ExecuteStoredProcedure(
+                    _systemDbConnectionString,
+                    spName,
+                    parameters
+                );
+
+            }
+            catch (Exception ex)
+            {
+                message = MessageCreate.CreateErrorMessage(
+                 0,
+                 ex,
+                 "GetUnAuthorizedTasks",
+                 "XONT.Ventura.AppConsole.DAL.dll"
+             );
+                Console.WriteLine(ex);
+                return new DataTable();
+            }
+        }
     }
 }

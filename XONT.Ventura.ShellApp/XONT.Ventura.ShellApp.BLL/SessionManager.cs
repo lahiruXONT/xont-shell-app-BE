@@ -11,7 +11,7 @@ namespace XONT.Ventura.ShellApp.BLL
     {
         private readonly ConcurrentDictionary<string, SessionData> _sessions = new();
 
-        public void CreateSession(string sessionId, string userName, string businessUnit)
+        public void CreateSession(string sessionId, string userName, string businessUnit, List<string> unAuthorizedTasks)
         {
             var session = new SessionData
             {
@@ -19,7 +19,8 @@ namespace XONT.Ventura.ShellApp.BLL
                 UserName = userName,
                 BusinessUnit = businessUnit,
                 CreatedAt = DateTime.UtcNow,
-                LastActivity = DateTime.UtcNow
+                LastActivity = DateTime.UtcNow,
+                UnAuthorizedTasks = unAuthorizedTasks
             };
 
             _sessions[sessionId] = session;
@@ -58,5 +59,6 @@ namespace XONT.Ventura.ShellApp.BLL
         public string BusinessUnit { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
         public DateTime LastActivity { get; set; }
+        public List<string> UnAuthorizedTasks { get; set; } = new();
     }
 }
