@@ -158,16 +158,13 @@ builder.Services.AddAuthentication(options =>
 });
 
 
-
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("TaskAccess", policy =>
         policy.RequireAuthenticatedUser().AddRequirements(new TaskAuthorizationRequirement()));
-    options.FallbackPolicy = new AuthorizationPolicyBuilder()
-                               .RequireAuthenticatedUser()
-                               .AddRequirements(new TaskAuthorizationRequirement())
-                               .Build();
+    
 });
+
 #endregion
 
 var app = builder.Build();

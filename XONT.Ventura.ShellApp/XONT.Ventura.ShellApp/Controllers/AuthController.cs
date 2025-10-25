@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Reflection;
@@ -76,13 +77,15 @@ namespace XONT.Ventura.ShellApp.Controller
                 user.SessionId = sessionId;
                 user.WorkstationId = Request.HttpContext.Connection.RemoteIpAddress?.ToString() ?? "";
                 user.SuccessfulLogin = "1";
-                _userManager.SaveUserLoginData(user, ref message);
+
+                var refreshTokenExpire = DateTime.UtcNow.AddDays(7);
+
+                _userManager.SaveUserLoginData(user,refreshToken,refreshTokenExpire, ref message);
 
                 // Map to DTO
                 var response = new LoginResponse
                 { Success = true,
                     Token = token,
-                    RefreshToken = refreshToken,
                     ExpiresAt = DateTime.UtcNow.AddMinutes(60),
                     User = new UserDto
                     {
@@ -102,6 +105,13 @@ namespace XONT.Ventura.ShellApp.Controller
                         MustChangePassword=false
                     }
                 };
+                Response.Cookies.Append("Host-token", refreshToken, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = refreshTokenExpire
+                });
 
                 return Ok(response);
             }
@@ -112,36 +122,81 @@ namespace XONT.Ventura.ShellApp.Controller
             }
         }
 
-        [HttpPost("refresh")]
-        public ActionResult<LoginResponse> RefreshToken([FromBody] RefreshTokenRequest request)
+        [HttpGet("refresh")]
+        public ActionResult<LoginResponse> RefreshToken()
         {
             try
             {
-                var principal = _jwtTokenService.GetPrincipalFromExpiredToken(request.Token);
-                if (principal == null)
+                var refreshToken = Request.Cookies["Host-token"];
+                if (string.IsNullOrEmpty(refreshToken))
                 {
-                    return Unauthorized(new { message = "Invalid token" });
+                    return Unauthorized(new { message = "Refresh token missing" });
                 }
 
-                var userName = principal.Identity?.Name;
-                if (string.IsNullOrEmpty(userName))
+                MessageSet? message = null;
+                var(UserName, Password) = _userManager.ValidateRefreshToken(refreshToken,ref message);
+                if (message!= null)
                 {
-                    return Unauthorized(new { message = "Invalid token" });
+                    return Unauthorized(new { message  });
+                }
+                if (string.IsNullOrWhiteSpace(UserName))
+                {
+                    return Unauthorized(new { message = "Invalid or expired refresh token" });
                 }
 
-                // Generate new tokens
-                var businessUnit = principal.FindFirst("BusinessUnit")?.Value ?? "";
-                var roleCode = principal.FindFirst("RoleCode")?.Value ?? "";
-                var userRoles = principal.FindAll(ClaimTypes.Role).Select(c=>c.Value).ToList();
-                var newToken = _jwtTokenService.GenerateAccessToken(userName, businessUnit, roleCode, userRoles);
-                var newRefreshToken = _jwtTokenService.GenerateRefreshToken();
-
-                return Ok(new
+                var user = _userManager.GetUserInfo(UserName,Password, ref message);
+                if (message != null || user == null || !user.isExists)
                 {
-                    token = newToken,
-                    refreshToken = newRefreshToken,
-                    expiresAt = DateTime.UtcNow.AddMinutes(60)
-                });
+                    return Unauthorized(new { message = "Invalid or expired refresh token" });
+                }
+
+                // Check if user is active
+                if (!user.ActiveFlag)
+                {
+                    return Unauthorized(new { message = "User account is disabled" });
+                }
+
+                // Get user roles using existing BLL
+                var userRoles = _userManager.GetUserRoles(UserName, ref message);
+
+                // Get default business unit
+                var defaultBU = user.BusinessUnit;
+                var defaultRole = user.DefaultRoleCode ?? (userRoles?.FirstOrDefault()?.RoleCode ?? "");
+                var rolelist = userRoles.Select(r => r.RoleCode).ToList() ?? new List<string>();
+                // Generate JWT tokens
+                var token = _jwtTokenService.GenerateAccessToken(user.UserName, defaultBU, defaultRole, rolelist);
+                var unAuthorizedTasks = _userManager.GetUnAuthorizedTasksForUser(user.UserName, ref message);
+
+                if (message != null)
+                {
+                    return StatusCode(500, new { message });
+                }
+                // Map to DTO
+                var response = new LoginResponse
+                {
+                    Success = true,
+                    Token = token,
+                    ExpiresAt = DateTime.UtcNow.AddMinutes(60),
+                    User = new UserDto
+                    {
+                        UserId = user.UserName,
+                        UserName = user.UserName,
+                        FullName = user.UserFullName,
+                        Email = user.Email ?? "",
+                        ProfileImage = user.HasProPicture == '1' ? $"/api/user/profile-image/{user.UserName}" : "",
+                        Roles = userRoles?.Select(r => new RoleDto
+                        {
+                            RoleCode = r.RoleCode,
+                            Description = r.Description,
+                            Icon = r.Icon
+                        }).ToList() ?? new List<RoleDto>(),
+                        CurrentRole = defaultRole,
+                        CurrentBusinessUnit = defaultBU,
+                        MustChangePassword = false
+                    }
+                };
+                return Ok(response);
+               
             }
             catch (Exception ex)
             {
@@ -153,6 +208,8 @@ namespace XONT.Ventura.ShellApp.Controller
         [HttpPost("logout")]
         public IActionResult Logout()
         {
+
+            Response.Cookies.Delete("Host-token");
             // Get session ID from header or query
             var sessionId = HttpContext.Request.Headers["X-Session-Id"].FirstOrDefault();
 
@@ -165,9 +222,4 @@ namespace XONT.Ventura.ShellApp.Controller
         }
     }
 
-    public class RefreshTokenRequest
-    {
-        public string Token { get; set; } = string.Empty;
-        public string RefreshToken { get; set; } = string.Empty;
-    }
 }

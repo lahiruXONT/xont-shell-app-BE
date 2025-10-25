@@ -527,9 +527,9 @@ namespace XONT.Ventura.ShellApp.DAL
         }
 
 
-        public void SaveUserLoginData(User userOb, ref MessageSet message)
+        public void SaveUserLoginData(User userOb, string refreshToken, DateTime refreshTokenExpire, ref MessageSet message)
         {
-            SaveLoginData(userOb, ref message);
+            SaveLoginData(userOb,  refreshToken,  refreshTokenExpire, ref message);
         }
 
         public List<UserMenu> GetUserMenu(string userName, string roleCode, ref MessageSet message)
@@ -663,15 +663,15 @@ namespace XONT.Ventura.ShellApp.DAL
 
             return userTasks;
         }
-        private string SaveLoginData(User userOb, ref MessageSet message)
+        private string SaveLoginData(User userOb, string refreshToken, DateTime refreshTokenExpire, ref MessageSet message)
         {
             try
             {
                 string commandText = @"
             INSERT INTO [ZYPasswordLoginDetails]
-                ([UserName], [Date], [Time], [Password], [WorkstationID], [SuccessfulLogin], [SessionID], [Reson])
+                ([UserName], [Date], [Time], [Password], [WorkstationID], [SuccessfulLogin], [SessionID],[Token],[TokenExpire] ,[Reson])
             VALUES
-                (@UserName, @Date, @Time, @Password, @WorkstationID, @SuccessfulLogin, @SessionID, @Reson)";
+                (@UserName, @Date, @Time, @Password, @WorkstationID, @SuccessfulLogin, @SessionID,@Token,@Expire, @Reson)";
 
                 var parameters = new[]
                 {
@@ -702,6 +702,13 @@ namespace XONT.Ventura.ShellApp.DAL
             new SqlParameter("@SessionID", SqlDbType.NVarChar, 50)
             {
                 Value = userOb.SessionId.Trim()
+            }, new SqlParameter("@Token", SqlDbType.NVarChar,-1)
+            {
+                Value = refreshToken.Trim()
+            },
+            new SqlParameter("@Expire", SqlDbType.DateTime)
+            {
+                Value = refreshTokenExpire
             },
             new SqlParameter("@Reson", SqlDbType.NVarChar, 255)
             {
@@ -728,7 +735,59 @@ namespace XONT.Ventura.ShellApp.DAL
 
             return string.Empty;
         }
+        public (string? UserName, string? Password) ValidateRefreshToken(string refreshToken, ref MessageSet message)
+        {
+            if (string.IsNullOrWhiteSpace(refreshToken))
+                return (null, null);
 
+            try
+            {
+                string commandText = @"
+            SELECT TOP 1 [UserName], [Password]
+            FROM [ZYPasswordLoginDetails]
+            WHERE [Token] = @Token
+              AND [TokenExpire] > GETUTCDATE()
+              AND [SuccessfulLogin] = '1'";
+
+                var parameters = new[]
+                {
+            new SqlParameter("@Token", SqlDbType.NVarChar, -1)
+            {
+                Value = refreshToken
+            }
+        };
+
+                var results = _dbHelper.ExecuteReader(
+                    _systemDbConnectionString,
+                    commandText,
+                    parameters,
+                    reader => new
+                    {
+                        UserName = reader["UserName"] as string,
+                        Password = reader["Password"] as string
+                    }
+                );
+
+                if (results.Count > 0)
+                {
+                    var first = results[0];
+                    return (first.UserName, first.Password);
+                }
+
+                return (null, null);
+            }
+            catch (Exception ex)
+            {
+                message = MessageCreate.CreateErrorMessage(
+                    0,
+                    ex,
+                    "ValidateRefreshToken",
+                    "XONT.Ventura.AppConsole.DAL.dll"
+                );
+                Console.WriteLine(ex);
+                return (null, null);
+            }
+        }
         public List<UserRole> GetUserRole(string userName, ref MessageSet message)
         {
             var userRoles = new List<UserRole>();

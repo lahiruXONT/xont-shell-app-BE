@@ -34,9 +34,13 @@ namespace XONT.Ventura.ShellApp.BLL
             return userTasks;
         }
 
-        public void SaveUserLoginData(User userOb, ref MessageSet message)
+        public void SaveUserLoginData(User userOb, string refreshToken, DateTime refreshTokenExpire, ref MessageSet message)
         {
-            _userDal.SaveUserLoginData(userOb, ref message);
+            _userDal.SaveUserLoginData(userOb, refreshToken, refreshTokenExpire, ref message);
+        }
+        public (string?, string?) ValidateRefreshToken(string refreshToken, ref MessageSet message)
+        {
+            return _userDal.ValidateRefreshToken(refreshToken, ref message);
         }
         public List<UserRole> GetUserRoles(string userName, ref MessageSet message)
         {
