@@ -23,76 +23,81 @@ namespace XONT.Ventura.ShellApp.Controller
             _logger = logger;
         }
 
-        [HttpGet("user/role/{roleCode}")]
-        public ActionResult<MenuHierarchyDto> GetUserMenu(
-            string roleCode)
+        [HttpPost("user/role")]
+        public ActionResult<List<MenuHierarchyDto>> GetUserMenu(MenuRequest request
+            )
         {
             try
             {
                 MessageSet? message = null;
+                List<MenuHierarchyDto> list = new List<MenuHierarchyDto>();
 
-                // Get menu using existing BLL
-                var menuGroups = _userManager.GetUserManu(userName, roleCode, ref message);
-
-                if (message != null)
+                foreach (string role in request.roleCodes)
                 {
-                    return BadRequest(new { message });
-                }
+                    // Get menu using existing BLL
+                    var menuGroups = _userManager.GetUserManu(userName, role, ref message);
 
-                var hierarchy = new MenuHierarchyDto
-                {
-                    RoleCode = roleCode,
-                    RoleName = roleCode,
-                    IsPriorityRole = roleCode.StartsWith("PRTROLE"),
-                    IsDefaultRole = false,
-                    MenuGroups = new List<MenuGroupDto>(),
-                    TotalTasks = 0
-                };
-
-                int order = 0;
-                foreach (var menu in menuGroups ?? Enumerable.Empty<UserMenu>())
-                {
-                    // Get tasks for this menu
-                    var tasks = _userManager.GetUserTask(menu.MenuCode, userName, ref message);
                     if (message != null)
                     {
                         return BadRequest(new { message });
                     }
-                    var menuGroup = new MenuGroupDto
+
+                    var hierarchy = new MenuHierarchyDto
                     {
-                        MenuCode = menu.MenuCode,
-                        Description = menu.Description,
-                        Icon = menu.Icon,
-                        Order = order++,
-                        IsExpanded = false,
-                        IsVisible = true,
-                        Tasks = tasks?.Select(t => new MenuTaskDto
-                        {
-                            TaskCode = t.TaskCode,
-                            MenuCode = menu.MenuCode,
-                            Caption = t.Caption,
-                            Description = t.Description,
-                            Icon = t.Icon,
-                            Url = t.ExecutionScript,
-                            TaskType = t.TaskType ?? "",
-                            ApplicationCode = t.ApplicationCode ?? "",
-                            ExclusivityMode = int.TryParse(t.ExclusivityMode, out var em) ? em : 0,
-                            ExecutionType = 0,
-                            Order = 0,
-                            IsVisible = true,
-                            IsFavorite = false
-                        }).ToList() ?? new List<MenuTaskDto>()
+                        RoleCode = role,
+                        RoleName = role,
+                        IsPriorityRole = role.StartsWith("PRTROLE"),
+                        IsDefaultRole = false,
+                        MenuGroups = new List<MenuGroupDto>(),
+                        TotalTasks = 0
                     };
 
-                    hierarchy.MenuGroups.Add(menuGroup);
-                    hierarchy.TotalTasks += menuGroup.Tasks.Count;
+                    int order = 0;
+                    foreach (var menu in menuGroups ?? Enumerable.Empty<UserMenu>())
+                    {
+                        // Get tasks for this menu
+                        var tasks = _userManager.GetUserTask(menu.MenuCode, userName, ref message);
+                        if (message != null)
+                        {
+                            return BadRequest(new { message });
+                        }
+                        var menuGroup = new MenuGroupDto
+                        {
+                            MenuCode = menu.MenuCode,
+                            Description = menu.Description,
+                            Icon = menu.Icon,
+                            Order = order++,
+                            IsExpanded = false,
+                            IsVisible = true,
+                            Tasks = tasks?.Select(t => new MenuTaskDto
+                            {
+                                TaskCode = t.TaskCode,
+                                MenuCode = menu.MenuCode,
+                                Caption = t.Caption,
+                                Description = t.Description,
+                                Icon = t.Icon,
+                                Url = t.ExecutionScript,
+                                TaskType = t.TaskType ?? "",
+                                ApplicationCode = t.ApplicationCode ?? "",
+                                ExclusivityMode = int.TryParse(t.ExclusivityMode, out var em) ? em : 0,
+                                ExecutionType = 0,
+                                Order = 0,
+                                IsVisible = true,
+                                IsFavorite = false
+                            }).ToList() ?? new List<MenuTaskDto>()
+                        };
+
+                        hierarchy.MenuGroups.Add(menuGroup);
+                        hierarchy.TotalTasks += menuGroup.Tasks.Count;
+                    }
+                    list.Add(hierarchy);
                 }
 
-                return Ok(hierarchy);
+                return Ok(list);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to load menu for user {UserName}, role {RoleCode}", userName, roleCode);
+                _logger.LogError(ex, "Failed to load menu for user {UserName}", userName);
                 return StatusCode(500, new { message = "Failed to load menu" });
             }
         }
@@ -151,5 +156,10 @@ namespace XONT.Ventura.ShellApp.Controller
     public class UpdateDailyMenuRequest
     {
         public string MenuCode { get; set; } = string.Empty;
+    }
+
+    public class MenuRequest
+    {
+        public List<string> roleCodes { get; set; } 
     }
 }

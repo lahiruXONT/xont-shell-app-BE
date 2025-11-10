@@ -26,10 +26,10 @@
 
   <ItemGroup>
     <Reference Include="XONT.Common.Data.EncriptDecript">
-      <HintPath>..\..\..\..\..\XontResource\bin\XONT.Common.Data.EncriptDecript.dll</HintPath>
+      <HintPath>..\..\..\..\..\XONT\XontResource\bin\XONT.Common.Data.EncriptDecript.dll</HintPath>
     </Reference>
     <Reference Include="XONT.Common.Message.MessageCreate">
-      <HintPath>..\..\..\..\..\XontResource\bin\XONT.Common.Message.MessageCreate.dll</HintPath>
+      <HintPath>..\..\..\..\..\XONT\XontResource\bin\XONT.Common.Message.MessageCreate.dll</HintPath>
     </Reference>
   </ItemGroup>
 

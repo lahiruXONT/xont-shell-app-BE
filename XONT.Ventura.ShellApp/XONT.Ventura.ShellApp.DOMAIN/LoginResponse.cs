@@ -23,7 +23,7 @@ namespace XONT.Ventura.ShellApp.DOMAIN
         public string ProfileImage { get; set; } = string.Empty;
         public List<RoleDto> Roles { get; set; } = new();
         public List<BusinessUnitDto> BusinessUnits { get; set; } = new();
-        public string CurrentRole { get; set; } = string.Empty;
+        public RoleDto CurrentRole { get; set; } 
         public string CurrentBusinessUnit { get; set; } = string.Empty;
         public bool MustChangePassword { get; set; }
     }

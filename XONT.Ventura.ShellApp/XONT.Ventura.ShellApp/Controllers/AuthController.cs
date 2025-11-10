@@ -58,10 +58,10 @@ namespace XONT.Ventura.ShellApp.Controller
 
                 // Get default business unit
                 var defaultBU = user.BusinessUnit;
-                var defaultRole = user.DefaultRoleCode ?? (userRoles?.FirstOrDefault()?.RoleCode ?? "");
+                var defaultRole = string.IsNullOrWhiteSpace(user.DefaultRoleCode) ? userRoles?.FirstOrDefault() : userRoles?.Where(x=>x.RoleCode==user.DefaultRoleCode).FirstOrDefault();
                 var rolelist = userRoles.Select(r => r.RoleCode).ToList() ?? new List<string>();
                 // Generate JWT tokens
-                var token = _jwtTokenService.GenerateAccessToken(user.UserName, defaultBU, defaultRole, rolelist);
+                var token = _jwtTokenService.GenerateAccessToken(user.UserName, defaultBU, defaultRole?.RoleCode ??"", rolelist);
                 var refreshToken = _jwtTokenService.GenerateRefreshToken();
                 var unAuthorizedTasks = _userManager.GetUnAuthorizedTasksForUser(user.UserName, ref message);
 
@@ -100,7 +100,12 @@ namespace XONT.Ventura.ShellApp.Controller
                             Description = r.Description,
                             Icon = r.Icon
                         }).ToList() ?? new List<RoleDto>(),
-                        CurrentRole = defaultRole,
+                        CurrentRole = defaultRole!=null ? new RoleDto
+                        {
+                            RoleCode = defaultRole.RoleCode,
+                            Description = defaultRole.Description,
+                            Icon = defaultRole.Icon
+                        }:null,
                         CurrentBusinessUnit = defaultBU,
                         MustChangePassword=false
                     }
@@ -161,10 +166,10 @@ namespace XONT.Ventura.ShellApp.Controller
 
                 // Get default business unit
                 var defaultBU = user.BusinessUnit;
-                var defaultRole = user.DefaultRoleCode ?? (userRoles?.FirstOrDefault()?.RoleCode ?? "");
+                var defaultRole = string.IsNullOrWhiteSpace(user.DefaultRoleCode) ? userRoles?.FirstOrDefault() : userRoles?.Where(x => x.RoleCode == user.DefaultRoleCode).FirstOrDefault();
                 var rolelist = userRoles.Select(r => r.RoleCode).ToList() ?? new List<string>();
                 // Generate JWT tokens
-                var token = _jwtTokenService.GenerateAccessToken(user.UserName, defaultBU, defaultRole, rolelist);
+                var token = _jwtTokenService.GenerateAccessToken(user.UserName, defaultBU, defaultRole?.RoleCode ??"", rolelist);
                 var unAuthorizedTasks = _userManager.GetUnAuthorizedTasksForUser(user.UserName, ref message);
 
                 if (message != null)
@@ -190,7 +195,12 @@ namespace XONT.Ventura.ShellApp.Controller
                             Description = r.Description,
                             Icon = r.Icon
                         }).ToList() ?? new List<RoleDto>(),
-                        CurrentRole = defaultRole,
+                        CurrentRole = defaultRole != null ? new RoleDto
+                        {
+                            RoleCode = defaultRole.RoleCode,
+                            Description = defaultRole.Description,
+                            Icon = defaultRole.Icon
+                        } : null,
                         CurrentBusinessUnit = defaultBU,
                         MustChangePassword = false
                     }
